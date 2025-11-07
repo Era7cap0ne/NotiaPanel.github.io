@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Notia Panel</title>
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background: black;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+  }
+
+  /* Yağmur arka plan */
+  #rainCanvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: -1;
+  }
+
+  /* CLICK TO START */
+  #startScreen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    color: white;
+    cursor: pointer;
+    z-index: 999;
+  }
+
+  /* NOTIA sabit + iki renkli */
+  .notia {
+    font-size: 95px;
+    font-weight: 900;
+    text-align: center;
+    margin-top: 200px;
+  }
+
+  .notia .red {
+    color: #ff0000;
+    text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000, 0 0 40px #ff0000, 0 0 80px #ff0000;
+  }
+
+  .notia .white {
+    color: #ffffff;
+    text-shadow: 0 0 10px #ffffff, 0 0 20px #ffffff, 0 0 40px #ffffff, 0 0 80px #ffffff;
+  }
+
+  /* Butonlar */
+  .buttons {
+    margin-top: 40px;
+    text-align: center;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 14px 32px;
+    margin: 10px;
+    background: #ff0000;
+    color: #fff;
+    font-size: 22px;
+    font-weight: bold;
+    border-radius: 12px;
+    text-decoration: none;
+    box-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+    transition: transform 0.2s;
+  }
+
+  .btn:hover {
+    transform: scale(1.08);
+  }
+</style>
+</head>
+<body>
+
+<canvas id="rainCanvas"></canvas>
+
+<!-- CLICK TO START -->
+<div id="startScreen">CLICK TO START</div>
+
+<!-- NOTIA -->
+<div class="notia">
+  <span class="red">N</span>
+  <span class="white">O</span>
+  <span class="red">T</span>
+  <span class="white">I</span>
+  <span class="red">A</span>
+</div>
+
+<!-- Butonlar -->
+<div class="buttons">
+  <a class="btn" href="https://discord.gg/F8HBvYSnAq" target="_blank">Discord</a>
+  <a class="btn" href="https://www.youtube.com/channel/UCYU0p1fDf4IkbSbK4LwTM8Q" target="_blank">YouTube</a>
+</div>
+
+<!-- Müzik -->
+<audio id="bgm" loop>
+  <source src="DarkStorm.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+document.getElementById("startScreen").onclick = function () {
+    this.style.display = "none";
+    let audio = document.getElementById("bgm");
+    audio.volume = 0.4;
+
+    audio.play().then(() => {
+        console.log("Müzik başladı.");
+    }).catch((err) => {
+        console.log("Müzik çalamadı, tarayıcı izin engeli:", err);
+        alert("Tarayıcı sesi engelliyor. Adres çubuğundan ses izni aç 🔊");
+    });
+};
+
+/* Yağmur efekti */
+const canvas = document.getElementById("rainCanvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let rainDrops = [];
+
+for (let i = 0; i < 350; i++) {
+    rainDrops.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        length: 15 + Math.random() * 20,
+        speed: 4 + Math.random() * 4
+    });
+}
+
+function rain() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    ctx.strokeStyle = "rgba(255,255,255,0.5)";
+    ctx.lineWidth = 2;
+
+    for (let drop of rainDrops) {
+        ctx.beginPath();
+        ctx.moveTo(drop.x, drop.y);
+        ctx.lineTo(drop.x, drop.y + drop.length);
+        ctx.stroke();
+
+        drop.y += drop.speed;
+
+        if (drop.y > canvas.height) {
+            drop.y = -20;
+            drop.x = Math.random() * canvas.width;
+        }
+    }
+
+    requestAnimationFrame(rain);
+}
+
+rain();
+</script>
+
+</body>
+</html>
